@@ -1,22 +1,26 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: ServiceConnect API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: services
+    description: Service categories
+  - name: leads
+    description: Service leads
+  - name: providers
+    description: Trusted service providers
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +28,194 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /services:
+    get:
+      operationId: listServices
+      tags: [services]
+      summary: List all service categories
+      responses:
+        "200":
+          description: List of services
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Service"
+    post:
+      operationId: createService
+      tags: [services]
+      summary: Create a service category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateService"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"
+
+  /services/{id}:
+    delete:
+      operationId: deleteService
+      tags: [services]
+      summary: Delete a service category
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /leads:
+    get:
+      operationId: listLeads
+      tags: [leads]
+      summary: List all leads (admin)
+      responses:
+        "200":
+          description: List of leads
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Lead"
+    post:
+      operationId: submitLead
+      tags: [leads]
+      summary: Submit a new service lead (public)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateLead"
+      responses:
+        "201":
+          description: Lead submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Lead"
+
+  /leads/{id}:
+    patch:
+      operationId: updateLead
+      tags: [leads]
+      summary: Update a lead status or notes
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateLead"
+      responses:
+        "200":
+          description: Updated lead
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Lead"
+    delete:
+      operationId: deleteLead
+      tags: [leads]
+      summary: Delete a lead
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /providers:
+    get:
+      operationId: listProviders
+      tags: [providers]
+      summary: List all trusted providers
+      responses:
+        "200":
+          description: List of providers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Provider"
+    post:
+      operationId: createProvider
+      tags: [providers]
+      summary: Add a trusted provider
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateProvider"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Provider"
+
+  /providers/{id}:
+    patch:
+      operationId: updateProvider
+      tags: [providers]
+      summary: Update a provider
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateProvider"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Provider"
+    delete:
+      operationId: deleteProvider
+      tags: [providers]
+      summary: Delete a provider
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +226,212 @@ components:
       required:
         - status
 
+    Service:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        icon:
+          type: string
+        active:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - description
+        - icon
+        - active
+        - createdAt
+
+    CreateService:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        icon:
+          type: string
+        active:
+          type: boolean
+      required:
+        - name
+        - description
+        - icon
+
+    Lead:
+      type: object
+      properties:
+        id:
+          type: integer
+        serviceId:
+          type: integer
+        serviceName:
+          type: string
+        customerName:
+          type: string
+        customerEmail:
+          type: string
+        customerPhone:
+          type: string
+        address:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [new, contacted, forwarded, completed, cancelled]
+        adminNotes:
+          type: string
+        assignedProviderId:
+          type: integer
+        assignedProviderName:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - serviceId
+        - serviceName
+        - customerName
+        - customerEmail
+        - customerPhone
+        - address
+        - description
+        - status
+        - createdAt
+        - updatedAt
+
+    CreateLead:
+      type: object
+      properties:
+        serviceId:
+          type: integer
+        customerName:
+          type: string
+        customerEmail:
+          type: string
+        customerPhone:
+          type: string
+        address:
+          type: string
+        description:
+          type: string
+      required:
+        - serviceId
+        - customerName
+        - customerEmail
+        - customerPhone
+        - address
+        - description
+
+    UpdateLead:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [new, contacted, forwarded, completed, cancelled]
+        adminNotes:
+          type: string
+        assignedProviderId:
+          type: integer
+
+    Provider:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        contactName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        serviceIds:
+          type: array
+          items:
+            type: integer
+        serviceNames:
+          type: array
+          items:
+            type: string
+        rating:
+          type: number
+        active:
+          type: boolean
+        notes:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - contactName
+        - email
+        - phone
+        - serviceIds
+        - serviceNames
+        - active
+        - createdAt
+
+    CreateProvider:
+      type: object
+      properties:
+        name:
+          type: string
+        contactName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        serviceIds:
+          type: array
+          items:
+            type: integer
+        rating:
+          type: number
+        notes:
+          type: string
+      required:
+        - name
+        - contactName
+        - email
+        - phone
+        - serviceIds
+
+    UpdateProvider:
+      type: object
+      properties:
+        name:
+          type: string
+        contactName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        serviceIds:
+          type: array
+          items:
+            type: integer
+        rating:
+          type: number
+        active:
+          type: boolean
+        notes:
+          type: string

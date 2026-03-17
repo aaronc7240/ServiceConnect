@@ -1,0 +1,19 @@
+packages:
+  "framer-motion": "For beautiful page transitions and micro-interactions"
+  "react-hook-form": "For robust form state management"
+  "@hookform/resolvers": "For Zod validation integration"
+  "date-fns": "For formatting lead and creation dates"
+  "clsx": "For conditional tailwind classes"
+  "tailwind-merge": "For merging tailwind classes safely"
+
+images:
+  - path: "artifacts/drop-service/public/images/hero-bg.png"
+    description: "Clean, modern abstract background featuring soft architectural curves and subtle light flares in light blue and white, conveying trust and professionalism, bright and optimistic"
+    aspect_ratio: "16:9"
+  - path: "artifacts/drop-service/public/images/logo-mark.png"
+    description: "A minimal, modern geometric logo mark combining a stylized shield and a subtle home roof silhouette, solid deep royal blue color, transparent background"
+    aspect_ratio: "1:1"
+
+notes:
+  - Using generated Orval hooks from @workspace/api-client-react
+  - Admin auth uses simple localStorage 'admin_token' for demonstration
