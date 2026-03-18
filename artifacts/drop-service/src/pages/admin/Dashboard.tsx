@@ -4,14 +4,14 @@ import { format } from "date-fns"
 import { 
   LayoutDashboard, Users, Briefcase, LogOut, 
   Search, Filter, Plus, MoreVertical, ShieldCheck, Mail, Phone, MapPin, 
-  CheckCircle, Clock, XCircle, Forward, Loader2 
+  CheckCircle, Clock, XCircle, Forward, Loader2, Wrench, Star
 } from "lucide-react"
 import { 
   useListLeads, useUpdateLead, useDeleteLead, 
   useListServices, useCreateService, useDeleteService,
   useListProviders, useCreateProvider, useDeleteProvider
 } from "@workspace/api-client-react"
-import type { Lead, UpdateLeadStatus } from "@workspace/api-client-react/src/generated/api.schemas"
+import type { Lead, UpdateLeadStatus } from "@workspace/api-client-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
