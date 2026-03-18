@@ -1,19 +1,27 @@
 import { Link } from "wouter"
 import { motion } from "framer-motion"
-import { ShieldCheck, Clock, Star, Wrench, Droplets, Car, Home as HomeIcon, Zap, ArrowRight, CheckCircle2 } from "lucide-react"
+import { ShieldCheck, Clock, Star, Wrench, Droplets, Car, Home as HomeIcon, Zap, ArrowRight, CheckCircle2, Key, Leaf, Hammer, Paintbrush, Sofa, Layers, Triangle, Grid3x3 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useListServices } from "@workspace/api-client-react"
 
-// Map string icons from DB to actual components
-const getIcon = (name: string) => {
+// Map icon string from DB to lucide components
+const getIcon = (icon: string) => {
   const icons: Record<string, React.ReactNode> = {
-    'locksmith': <Wrench className="w-8 h-8" />,
-    'power-washing': <Droplets className="w-8 h-8" />,
-    'car-cleaning': <Car className="w-8 h-8" />,
-    'cleaning': <HomeIcon className="w-8 h-8" />,
-    'electrician': <Zap className="w-8 h-8" />
+    'key': <Key className="w-8 h-8" />,
+    'droplets': <Droplets className="w-8 h-8" />,
+    'car': <Car className="w-8 h-8" />,
+    'wrench': <Wrench className="w-8 h-8" />,
+    'zap': <Zap className="w-8 h-8" />,
+    'leaf': <Leaf className="w-8 h-8" />,
+    'home': <HomeIcon className="w-8 h-8" />,
+    'hammer': <Hammer className="w-8 h-8" />,
+    'paintbrush': <Paintbrush className="w-8 h-8" />,
+    'sofa': <Sofa className="w-8 h-8" />,
+    'layers': <Layers className="w-8 h-8" />,
+    'triangle': <Triangle className="w-8 h-8" />,
+    'grid': <Grid3x3 className="w-8 h-8" />,
   };
-  return icons[name.toLowerCase()] || <Wrench className="w-8 h-8" />;
+  return icons[icon?.toLowerCase()] ?? <Wrench className="w-8 h-8" />;
 };
 
 export function Home() {
@@ -93,7 +101,7 @@ export function Home() {
                       <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110" />
                       
                       <div className="w-16 h-16 rounded-2xl bg-slate-50 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors duration-300 relative z-10">
-                        {getIcon(service.icon || service.name)}
+                        {getIcon(service.icon)}
                       </div>
                       
                       <h3 className="text-xl font-bold text-slate-900 mb-3 relative z-10 group-hover:text-primary transition-colors">

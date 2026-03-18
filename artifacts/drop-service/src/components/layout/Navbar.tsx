@@ -6,7 +6,18 @@ export function Navbar() {
   const [location] = useLocation();
   const isAdmin = location.startsWith('/admin');
 
-  if (isAdmin) return null; // Admin has its own layout
+  if (isAdmin) return null;
+
+  function handleGetQuote() {
+    if (location === "/") {
+      const el = document.getElementById("services");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+      }
+    } else {
+      window.location.href = "/#services";
+    }
+  }
 
   return (
     <nav className="sticky top-0 z-40 w-full bg-white/80 backdrop-blur-lg border-b border-slate-200/60">
@@ -25,9 +36,7 @@ export function Navbar() {
             <Link href="/admin" className="text-sm font-medium text-slate-600 hover:text-primary transition-colors hidden sm:block">
               Provider Login
             </Link>
-            <Link href="/#services">
-              <Button>Get a Quote</Button>
-            </Link>
+            <Button onClick={handleGetQuote}>Get a Quote</Button>
           </div>
         </div>
       </div>
