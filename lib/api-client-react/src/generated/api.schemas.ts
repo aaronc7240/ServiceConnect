@@ -25,6 +25,13 @@ export interface CreateService {
   active?: boolean;
 }
 
+export interface UpdateService {
+  name?: string;
+  description?: string;
+  icon?: string;
+  active?: boolean;
+}
+
 export type LeadStatus = (typeof LeadStatus)[keyof typeof LeadStatus];
 
 export const LeadStatus = {

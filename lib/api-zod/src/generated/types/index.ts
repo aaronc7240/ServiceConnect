@@ -17,3 +17,4 @@ export * from "./service";
 export * from "./updateLead";
 export * from "./updateLeadStatus";
 export * from "./updateProvider";
+export * from "./updateService";

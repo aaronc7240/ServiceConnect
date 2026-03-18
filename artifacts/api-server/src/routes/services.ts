@@ -1,7 +1,7 @@
 import { Router, type IRouter } from "express";
-import { db, servicesTable, insertServiceSchema } from "@workspace/db";
+import { db, servicesTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
-import { CreateServiceBody } from "@workspace/api-zod";
+import { CreateServiceBody, UpdateServiceBody } from "@workspace/api-zod";
 
 const router: IRouter = Router();
 
@@ -26,6 +26,25 @@ router.post("/services", async (req, res) => {
     active: body.active ?? true,
   }).returning();
   res.status(201).json({
+    id: service.id,
+    name: service.name,
+    description: service.description,
+    icon: service.icon,
+    active: service.active,
+    createdAt: service.createdAt.toISOString(),
+  });
+});
+
+router.patch("/services/:id", async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  const body = UpdateServiceBody.parse(req.body);
+  const updates: Partial<typeof servicesTable.$inferInsert> = {};
+  if (body.name !== undefined) updates.name = body.name;
+  if (body.description !== undefined) updates.description = body.description;
+  if (body.icon !== undefined) updates.icon = body.icon;
+  if (body.active !== undefined) updates.active = body.active;
+  const [service] = await db.update(servicesTable).set(updates).where(eq(servicesTable.id, id)).returning();
+  res.json({
     id: service.id,
     name: service.name,
     description: service.description,

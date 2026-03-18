@@ -4,11 +4,11 @@ import { format } from "date-fns"
 import { 
   LayoutDashboard, Users, Briefcase, LogOut, 
   Search, Filter, Plus, MoreVertical, ShieldCheck, Mail, Phone, MapPin, 
-  CheckCircle, Clock, XCircle, Forward, Loader2, Wrench, Star
+  CheckCircle, Clock, XCircle, Forward, Loader2, Wrench, Star, Pencil
 } from "lucide-react"
 import { 
   useListLeads, useUpdateLead, useDeleteLead, 
-  useListServices, useCreateService, useDeleteService,
+  useListServices, useCreateService, useUpdateService, useDeleteService,
   useListProviders, useCreateProvider, useDeleteProvider
 } from "@workspace/api-client-react"
 import type { Lead, UpdateLeadStatus } from "@workspace/api-client-react"
@@ -490,12 +490,21 @@ function ProvidersView() {
 function ServicesView() {
   const { data: services, isLoading, refetch } = useListServices();
   const createService = useCreateService();
+  const updateService = useUpdateService();
   const deleteService = useDeleteService();
 
+  // Add dialog state
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [icon, setIcon] = useState("wrench"); // default
+  const [icon, setIcon] = useState("wrench");
+
+  // Edit dialog state
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [editIcon, setEditIcon] = useState("");
 
   const handleCreate = () => {
     createService.mutate({
@@ -509,8 +518,30 @@ function ServicesView() {
     });
   };
 
+  const openEdit = (service: { id: number; name: string; description: string; icon: string }) => {
+    setEditingId(service.id);
+    setEditName(service.name);
+    setEditDescription(service.description);
+    setEditIcon(service.icon);
+    setIsEditOpen(true);
+  };
+
+  const handleEdit = () => {
+    if (editingId === null) return;
+    updateService.mutate({
+      id: editingId,
+      data: { name: editName, description: editDescription, icon: editIcon }
+    }, {
+      onSuccess: () => {
+        setIsEditOpen(false);
+        setEditingId(null);
+        refetch();
+      }
+    });
+  };
+
   const handleDelete = (id: number) => {
-    if(confirm("Delete this service? This may break leads tied to it.")) {
+    if (confirm("Delete this service? This may break leads tied to it.")) {
       deleteService.mutate({ id }, { onSuccess: () => refetch() });
     }
   };
@@ -524,40 +555,84 @@ function ServicesView() {
 
       <div className="divide-y divide-slate-100">
         {isLoading ? (
-           <div className="py-12 flex justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
+          <div className="py-12 flex justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
         ) : services?.map(service => (
           <div key={service.id} className="py-4 flex justify-between items-center group">
             <div className="flex items-center gap-4">
               <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center text-slate-500">
-                <Wrench className="w-5 h-5" /> {/* Generic icon fallback */}
+                <Wrench className="w-5 h-5" />
               </div>
               <div>
                 <h4 className="font-semibold text-slate-900">{service.name}</h4>
                 <p className="text-sm text-slate-500 line-clamp-1">{service.description}</p>
               </div>
             </div>
-            <Button variant="ghost" className="text-destructive opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => handleDelete(service.id)}>
-              Delete
-            </Button>
+            <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-1.5 text-primary border-primary/30 hover:bg-primary/5 hover:border-primary"
+                onClick={() => openEdit(service)}
+              >
+                <Pencil className="w-3.5 h-3.5" /> Edit
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-destructive hover:bg-destructive/5"
+                onClick={() => handleDelete(service.id)}
+              >
+                Delete
+              </Button>
+            </div>
           </div>
         ))}
       </div>
 
+      {/* Add dialog */}
       <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
         <DialogHeader>
           <DialogTitle>Create Service Category</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
+        <div className="space-y-4 mt-4">
           <Input placeholder="Service Name (e.g. Locksmith)" value={name} onChange={e => setName(e.target.value)} />
-          <Textarea placeholder="Description to show customers..." value={description} onChange={e => setDescription(e.target.value)} className="min-h-[100px]" />
+          <Textarea placeholder="Description shown to customers..." value={description} onChange={e => setDescription(e.target.value)} className="min-h-[100px]" />
           <div>
-            <label className="text-sm font-medium mb-1 block">Icon Name (lucide)</label>
-            <Input placeholder="e.g. wrench, car, home" value={icon} onChange={e => setIcon(e.target.value)} />
+            <label className="text-sm font-medium mb-1 block">Icon Name</label>
+            <Input placeholder="e.g. wrench, car, key, home, hammer" value={icon} onChange={e => setIcon(e.target.value)} />
           </div>
-          <div className="flex justify-end pt-4 space-x-3">
+          <div className="flex justify-end pt-2 gap-3">
             <Button variant="outline" onClick={() => setIsAddOpen(false)}>Cancel</Button>
             <Button onClick={handleCreate} disabled={createService.isPending || !name}>
               {createService.isPending ? "Creating..." : "Create Service"}
+            </Button>
+          </div>
+        </div>
+      </Dialog>
+
+      {/* Edit dialog */}
+      <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+        <DialogHeader>
+          <DialogTitle>Edit Service Category</DialogTitle>
+          <DialogDescription>Update the name, description, or icon for this service.</DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4 mt-4">
+          <div>
+            <label className="text-sm font-medium mb-1 block">Service Name</label>
+            <Input value={editName} onChange={e => setEditName(e.target.value)} />
+          </div>
+          <div>
+            <label className="text-sm font-medium mb-1 block">Description</label>
+            <Textarea value={editDescription} onChange={e => setEditDescription(e.target.value)} className="min-h-[100px]" />
+          </div>
+          <div>
+            <label className="text-sm font-medium mb-1 block">Icon Name</label>
+            <Input placeholder="e.g. wrench, car, key, home, hammer" value={editIcon} onChange={e => setEditIcon(e.target.value)} />
+          </div>
+          <div className="flex justify-end pt-2 gap-3">
+            <Button variant="outline" onClick={() => setIsEditOpen(false)}>Cancel</Button>
+            <Button onClick={handleEdit} disabled={updateService.isPending || !editName}>
+              {updateService.isPending ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </div>

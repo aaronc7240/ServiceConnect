@@ -38,6 +38,29 @@ export const CreateServiceBody = zod.object({
 });
 
 /**
+ * @summary Update a service category
+ */
+export const UpdateServiceParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const UpdateServiceBody = zod.object({
+  name: zod.string().optional(),
+  description: zod.string().optional(),
+  icon: zod.string().optional(),
+  active: zod.boolean().optional(),
+});
+
+export const UpdateServiceResponse = zod.object({
+  id: zod.number(),
+  name: zod.string(),
+  description: zod.string(),
+  icon: zod.string(),
+  active: zod.boolean(),
+  createdAt: zod.date(),
+});
+
+/**
  * @summary Delete a service category
  */
 export const DeleteServiceParams = zod.object({

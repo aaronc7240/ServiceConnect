@@ -62,6 +62,29 @@ paths:
                 $ref: "#/components/schemas/Service"
 
   /services/{id}:
+    patch:
+      operationId: updateService
+      tags: [services]
+      summary: Update a service category
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateService"
+      responses:
+        "200":
+          description: Updated service
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"
     delete:
       operationId: deleteService
       tags: [services]
@@ -265,6 +288,18 @@ components:
         - name
         - description
         - icon
+
+    UpdateService:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        icon:
+          type: string
+        active:
+          type: boolean
 
     Lead:
       type: object
