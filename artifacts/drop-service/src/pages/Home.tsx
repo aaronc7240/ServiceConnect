@@ -134,11 +134,6 @@ export function Home() {
                     <div className="group block h-full bg-white rounded-2xl p-8 border border-slate-200/60 shadow-lg shadow-slate-200/30 hover:shadow-xl hover:border-primary/30 transition-all duration-300 hover:-translate-y-1 cursor-pointer relative overflow-hidden">
                       <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110" />
 
-                      {/* Rank badge */}
-                      <div className="absolute top-4 left-4 w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center z-10">
-                        <span className="text-xs font-bold text-primary leading-none">{service.sortOrder}</span>
-                      </div>
-                      
                       <div className="w-16 h-16 rounded-2xl bg-slate-50 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors duration-300 relative z-10">
                         {getIcon(service.icon)}
                       </div>
