@@ -493,6 +493,9 @@ function ServicesView() {
   const updateService = useUpdateService();
   const deleteService = useDeleteService();
 
+  // Search state
+  const [serviceSearch, setServiceSearch] = useState("");
+
   // Add dialog state
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [name, setName] = useState("");
@@ -548,15 +551,32 @@ function ServicesView() {
 
   return (
     <div className="animate-in fade-in duration-300 bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold text-slate-900">Service Categories</h2>
         <Button onClick={() => setIsAddOpen(true)} className="gap-2"><Plus className="w-4 h-4" /> New Service</Button>
+      </div>
+
+      {/* Search bar */}
+      <div className="relative mb-4">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+        <Input
+          placeholder="Search services..."
+          value={serviceSearch}
+          onChange={e => setServiceSearch(e.target.value)}
+          className="pl-9"
+        />
       </div>
 
       <div className="divide-y divide-slate-100">
         {isLoading ? (
           <div className="py-12 flex justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
-        ) : services?.map(service => (
+        ) : (() => {
+          const filtered = (services ?? []).filter(s =>
+            s.name.toLowerCase().includes(serviceSearch.toLowerCase())
+          );
+          return filtered.length === 0 ? (
+            <p className="py-10 text-center text-slate-400 text-sm">No services match "{serviceSearch}"</p>
+          ) : filtered.map(service => (
           <div key={service.id} className="py-4 flex justify-between items-center group">
             <div className="flex items-center gap-4">
               <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center text-slate-500">
@@ -586,7 +606,8 @@ function ServicesView() {
               </Button>
             </div>
           </div>
-        ))}
+          ))
+        })()}
       </div>
 
       {/* Add dialog */}

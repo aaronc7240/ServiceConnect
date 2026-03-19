@@ -1,7 +1,9 @@
+import { useState } from "react"
 import { Link } from "wouter"
 import { motion } from "framer-motion"
-import { ShieldCheck, Clock, Star, Wrench, Droplets, Car, Home as HomeIcon, Zap, ArrowRight, CheckCircle2, Key, Leaf, Hammer, Paintbrush, Sofa, Layers, Triangle, Grid3x3 } from "lucide-react"
+import { ShieldCheck, Clock, Star, Wrench, Droplets, Car, Home as HomeIcon, Zap, ArrowRight, CheckCircle2, Key, Leaf, Hammer, Paintbrush, Sofa, Layers, Triangle, Grid3x3, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { useListServices } from "@workspace/api-client-react"
 
 // Map icon string from DB to lucide components
@@ -26,6 +28,7 @@ const getIcon = (icon: string) => {
 
 export function Home() {
   const { data: services, isLoading } = useListServices();
+  const [search, setSearch] = useState("");
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -75,9 +78,21 @@ export function Home() {
       {/* Services Grid */}
       <section id="services" className="py-24 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-16">
+          <div className="text-center max-w-2xl mx-auto mb-10">
             <h2 className="text-3xl font-display font-bold text-slate-900 mb-4">What do you need help with?</h2>
             <p className="text-slate-600 text-lg">Select a service below to get a free, no-obligation quote from a trusted local professional.</p>
+          </div>
+
+          {/* Search bar */}
+          <div className="max-w-md mx-auto mb-10 relative">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+            <Input
+              type="search"
+              placeholder="Search services..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="pl-10 h-12 rounded-xl border-slate-200 shadow-sm focus:border-primary"
+            />
           </div>
 
           {isLoading ? (
@@ -86,9 +101,19 @@ export function Home() {
                 <div key={i} className="h-48 rounded-2xl bg-white animate-pulse shadow-sm" />
               ))}
             </div>
-          ) : (
+          ) : (() => {
+            const filtered = services?.filter(s =>
+              s.active && s.name.toLowerCase().includes(search.toLowerCase())
+            ) ?? [];
+            return filtered.length === 0 ? (
+              <div className="text-center py-16 text-slate-500">
+                <Search className="w-10 h-10 mx-auto mb-3 opacity-30" />
+                <p className="text-lg font-medium">No services found for "{search}"</p>
+                <p className="text-sm mt-1">Try a different search term.</p>
+              </div>
+            ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {services?.filter(s => s.active).map((service, index) => (
+              {filtered.map((service, index) => (
                 <motion.div
                   key={service.id}
                   initial={{ opacity: 0, y: 20 }}
@@ -119,7 +144,8 @@ export function Home() {
                 </motion.div>
               ))}
             </div>
-          )}
+            )
+          })()}
         </div>
       </section>
 
