@@ -12,5 +12,6 @@ export interface Service {
   description: string;
   icon: string;
   active: boolean;
+  sortOrder: number;
   createdAt: Date;
 }

@@ -15,6 +15,7 @@ export interface Service {
   description: string;
   icon: string;
   active: boolean;
+  sortOrder: number;
   createdAt: string;
 }
 
@@ -23,6 +24,7 @@ export interface CreateService {
   description: string;
   icon: string;
   active?: boolean;
+  sortOrder?: number;
 }
 
 export interface UpdateService {
@@ -30,6 +32,7 @@ export interface UpdateService {
   description?: string;
   icon?: string;
   active?: boolean;
+  sortOrder?: number;
 }
 
 export type LeadStatus = (typeof LeadStatus)[keyof typeof LeadStatus];

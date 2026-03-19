@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Link } from "wouter"
 import { motion } from "framer-motion"
-import { ShieldCheck, Clock, Star, Wrench, Droplets, Car, Home as HomeIcon, Zap, ArrowRight, CheckCircle2, Key, Leaf, Hammer, Paintbrush, Sofa, Layers, Triangle, Grid3x3, Search } from "lucide-react"
+import { ShieldCheck, Clock, Star, Wrench, Droplets, Car, Home as HomeIcon, Zap, ArrowRight, CheckCircle2, Key, Leaf, Hammer, Paintbrush, Search, Sparkles, Trash2, Thermometer, Heart, Flame, Bug, Building2, Package, Shield, Settings, Sun, Accessibility } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useListServices } from "@workspace/api-client-react"
@@ -9,19 +9,28 @@ import { useListServices } from "@workspace/api-client-react"
 // Map icon string from DB to lucide components
 const getIcon = (icon: string) => {
   const icons: Record<string, React.ReactNode> = {
-    'key': <Key className="w-8 h-8" />,
-    'droplets': <Droplets className="w-8 h-8" />,
-    'car': <Car className="w-8 h-8" />,
     'wrench': <Wrench className="w-8 h-8" />,
+    'sparkles': <Sparkles className="w-8 h-8" />,
+    'hammer': <Hammer className="w-8 h-8" />,
     'zap': <Zap className="w-8 h-8" />,
     'leaf': <Leaf className="w-8 h-8" />,
-    'home': <HomeIcon className="w-8 h-8" />,
-    'hammer': <Hammer className="w-8 h-8" />,
+    'trash2': <Trash2 className="w-8 h-8" />,
     'paintbrush': <Paintbrush className="w-8 h-8" />,
-    'sofa': <Sofa className="w-8 h-8" />,
-    'layers': <Layers className="w-8 h-8" />,
-    'triangle': <Triangle className="w-8 h-8" />,
-    'grid': <Grid3x3 className="w-8 h-8" />,
+    'thermometer': <Thermometer className="w-8 h-8" />,
+    'heart': <Heart className="w-8 h-8" />,
+    'flame': <Flame className="w-8 h-8" />,
+    'droplets': <Droplets className="w-8 h-8" />,
+    'bug': <Bug className="w-8 h-8" />,
+    'building2': <Building2 className="w-8 h-8" />,
+    'package': <Package className="w-8 h-8" />,
+    'shield': <Shield className="w-8 h-8" />,
+    'star': <Star className="w-8 h-8" />,
+    'key': <Key className="w-8 h-8" />,
+    'settings': <Settings className="w-8 h-8" />,
+    'sun': <Sun className="w-8 h-8" />,
+    'accessibility': <Accessibility className="w-8 h-8" />,
+    'car': <Car className="w-8 h-8" />,
+    'home': <HomeIcon className="w-8 h-8" />,
   };
   return icons[icon?.toLowerCase()] ?? <Wrench className="w-8 h-8" />;
 };
@@ -124,6 +133,11 @@ export function Home() {
                   <Link href={`/request/${service.id}`}>
                     <div className="group block h-full bg-white rounded-2xl p-8 border border-slate-200/60 shadow-lg shadow-slate-200/30 hover:shadow-xl hover:border-primary/30 transition-all duration-300 hover:-translate-y-1 cursor-pointer relative overflow-hidden">
                       <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110" />
+
+                      {/* Rank badge */}
+                      <div className="absolute top-4 left-4 w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center z-10">
+                        <span className="text-xs font-bold text-primary leading-none">{service.sortOrder}</span>
+                      </div>
                       
                       <div className="w-16 h-16 rounded-2xl bg-slate-50 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors duration-300 relative z-10">
                         {getIcon(service.icon)}

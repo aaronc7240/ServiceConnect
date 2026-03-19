@@ -1,20 +1,23 @@
 import { Router, type IRouter } from "express";
 import { db, servicesTable } from "@workspace/db";
-import { eq } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import { CreateServiceBody, UpdateServiceBody } from "@workspace/api-zod";
 
 const router: IRouter = Router();
 
+const toDto = (s: typeof servicesTable.$inferSelect) => ({
+  id: s.id,
+  name: s.name,
+  description: s.description,
+  icon: s.icon,
+  active: s.active,
+  sortOrder: s.sortOrder,
+  createdAt: s.createdAt.toISOString(),
+});
+
 router.get("/services", async (_req, res) => {
-  const services = await db.select().from(servicesTable).orderBy(servicesTable.id);
-  res.json(services.map(s => ({
-    id: s.id,
-    name: s.name,
-    description: s.description,
-    icon: s.icon,
-    active: s.active,
-    createdAt: s.createdAt.toISOString(),
-  })));
+  const services = await db.select().from(servicesTable).orderBy(asc(servicesTable.sortOrder));
+  res.json(services.map(toDto));
 });
 
 router.post("/services", async (req, res) => {
@@ -24,15 +27,9 @@ router.post("/services", async (req, res) => {
     description: body.description,
     icon: body.icon ?? "wrench",
     active: body.active ?? true,
+    sortOrder: body.sortOrder ?? 999,
   }).returning();
-  res.status(201).json({
-    id: service.id,
-    name: service.name,
-    description: service.description,
-    icon: service.icon,
-    active: service.active,
-    createdAt: service.createdAt.toISOString(),
-  });
+  res.status(201).json(toDto(service));
 });
 
 router.patch("/services/:id", async (req, res) => {
@@ -43,15 +40,9 @@ router.patch("/services/:id", async (req, res) => {
   if (body.description !== undefined) updates.description = body.description;
   if (body.icon !== undefined) updates.icon = body.icon;
   if (body.active !== undefined) updates.active = body.active;
+  if (body.sortOrder !== undefined) updates.sortOrder = body.sortOrder;
   const [service] = await db.update(servicesTable).set(updates).where(eq(servicesTable.id, id)).returning();
-  res.json({
-    id: service.id,
-    name: service.name,
-    description: service.description,
-    icon: service.icon,
-    active: service.active,
-    createdAt: service.createdAt.toISOString(),
-  });
+  res.json(toDto(service));
 });
 
 router.delete("/services/:id", async (req, res) => {

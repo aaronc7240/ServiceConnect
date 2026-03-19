@@ -262,6 +262,8 @@ components:
           type: string
         active:
           type: boolean
+        sortOrder:
+          type: integer
         createdAt:
           type: string
           format: date-time
@@ -271,6 +273,7 @@ components:
         - description
         - icon
         - active
+        - sortOrder
         - createdAt
 
     CreateService:
@@ -284,6 +287,8 @@ components:
           type: string
         active:
           type: boolean
+        sortOrder:
+          type: integer
       required:
         - name
         - description
@@ -300,6 +305,8 @@ components:
           type: string
         active:
           type: boolean
+        sortOrder:
+          type: integer
 
     Lead:
       type: object

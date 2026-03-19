@@ -11,4 +11,5 @@ export interface UpdateService {
   description?: string;
   icon?: string;
   active?: boolean;
+  sortOrder?: number;
 }

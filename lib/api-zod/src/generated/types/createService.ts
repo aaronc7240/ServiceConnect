@@ -11,4 +11,5 @@ export interface CreateService {
   description: string;
   icon: string;
   active?: boolean;
+  sortOrder?: number;
 }

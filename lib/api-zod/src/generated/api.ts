@@ -23,6 +23,7 @@ export const ListServicesResponseItem = zod.object({
   description: zod.string(),
   icon: zod.string(),
   active: zod.boolean(),
+  sortOrder: zod.number(),
   createdAt: zod.date(),
 });
 export const ListServicesResponse = zod.array(ListServicesResponseItem);
@@ -35,6 +36,7 @@ export const CreateServiceBody = zod.object({
   description: zod.string(),
   icon: zod.string(),
   active: zod.boolean().optional(),
+  sortOrder: zod.number().optional(),
 });
 
 /**
@@ -49,6 +51,7 @@ export const UpdateServiceBody = zod.object({
   description: zod.string().optional(),
   icon: zod.string().optional(),
   active: zod.boolean().optional(),
+  sortOrder: zod.number().optional(),
 });
 
 export const UpdateServiceResponse = zod.object({
@@ -57,6 +60,7 @@ export const UpdateServiceResponse = zod.object({
   description: zod.string(),
   icon: zod.string(),
   active: zod.boolean(),
+  sortOrder: zod.number(),
   createdAt: zod.date(),
 });
 
