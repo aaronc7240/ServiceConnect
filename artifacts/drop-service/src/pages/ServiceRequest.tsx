@@ -20,6 +20,35 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+const descriptionPlaceholders: Record<string, string> = {
+  'emergency plumbing / rgi gas': "E.g., Burst pipe under the kitchen sink, water is leaking badly and needs urgent repair...",
+  'deep / end-of-tenancy cleaning': "E.g., Moving out of a 3-bed house, need a full end-of-tenancy clean including oven and carpets...",
+  'general handyman services': "E.g., A few small jobs — fixing a door that won't close, patching a hole in the wall, and re-hanging a shelf...",
+  'electricians (solar/ev charger)': "E.g., Looking to install a home EV charger in my garage and need a certified electrician to fit it...",
+  'landscaping & garden maintenance': "E.g., Garden is overgrown, need the lawn cut, hedges trimmed, and some weeding done...",
+  'waste removal & house clearance': "E.g., Clearing out a 2-bed house — old furniture, white goods, and general rubbish to be removed...",
+  'painting & decorating (interior)': "E.g., Need the living room and hallway painted, walls are currently magnolia and I'd like a fresh white finish...",
+  'energy retrofitting / insulation': "E.g., Looking to improve the insulation in my attic and walls — the house is losing a lot of heat...",
+  'mobile pet grooming': "E.g., Golden Retriever who needs a full groom — bath, trim, nail clipping, and brush out...",
+  'boiler servicing & repair': "E.g., Boiler hasn't been serviced in 2 years and is making a knocking noise — needs inspection and service...",
+  'gutter cleaning & power washing': "E.g., Gutters are blocked and overflowing, also want the driveway pressure washed while the team is here...",
+  'pest control': "E.g., Found signs of mice in the kitchen — droppings and chewed packets. Need an inspection and treatment...",
+  'property management (airbnb)': "E.g., Have a 2-bed apartment I want to list on Airbnb, looking for someone to handle check-ins, cleaning, and guest comms...",
+  'flat pack furniture assembly': "E.g., Just bought a large IKEA wardrobe and a chest of drawers, need someone to assemble both...",
+  'home security & cctv install': "E.g., Looking to install 4 outdoor cameras and a video doorbell — house had a break-in attempt last month...",
+  'carpet & upholstery cleaning': "E.g., 3-bed house carpets need a deep clean, plus the sofa is heavily stained and needs refreshing...",
+  'locksmith services': "E.g., Locked out of my front door, the key broke inside the lock and I need help getting in...",
+  'appliance repair (washers/ovens)': "E.g., Washing machine stopped mid-cycle and won't drain — need someone to diagnose and fix it...",
+  'window cleaning (residential)': "E.g., 3-storey house, all exterior windows need cleaning — last done about 6 months ago...",
+  'senior home modifications': "E.g., Need grab rails fitted in the bathroom and a ramp at the front door for my father who uses a walker...",
+};
+
+const getPlaceholder = (serviceName?: string) => {
+  if (!serviceName) return "E.g., Describe what you need done, any specific requirements, and when you'd like it completed...";
+  return descriptionPlaceholders[serviceName.toLowerCase()] 
+    ?? `E.g., Describe what you need for ${serviceName}, including any specific details or requirements...`;
+};
+
 export function ServiceRequest() {
   const { id } = useParams();
   const [, setLocation] = useLocation();
@@ -34,6 +63,10 @@ export function ServiceRequest() {
       serviceId: id ? Number(id) : undefined,
     }
   });
+
+  const watchedServiceId = watch("serviceId");
+  const watchedService = services?.find(s => s.id === Number(watchedServiceId));
+  const descriptionPlaceholder = getPlaceholder(watchedService?.name);
 
   const onSubmit = (data: FormValues) => {
     submitLead.mutate({ data }, {
@@ -121,7 +154,7 @@ export function ServiceRequest() {
               <div>
                 <label className="block text-sm font-semibold text-slate-900 mb-2">Describe what you need</label>
                 <Textarea 
-                  placeholder="E.g., I'm locked out of my car, need immediate assistance..." 
+                  placeholder={descriptionPlaceholder}
                   {...register("description")} 
                 />
                 {errors.description && <p className="text-destructive text-sm mt-1.5">{errors.description.message}</p>}
