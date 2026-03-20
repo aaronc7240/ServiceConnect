@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useLocation, useParams } from "wouter"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -54,6 +54,10 @@ export function ServiceRequest() {
   const [, setLocation] = useLocation();
   const { data: services, isLoading: servicesLoading } = useListServices();
   const submitLead = useSubmitLead();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, []);
   
   const selectedService = services?.find(s => s.id === Number(id));
 
