@@ -2,8 +2,19 @@ import { Link, useLocation } from "wouter"
 import { ShieldCheck, Heart, Star } from "lucide-react"
 
 export function Footer() {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   if (location.startsWith('/admin')) return null;
+
+  const handleViewServices = () => {
+    if (location === '/') {
+      document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      setLocation('/');
+      setTimeout(() => {
+        document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' });
+      }, 150);
+    }
+  };
 
   return (
     <footer className="bg-slate-900 text-slate-300 py-16">
@@ -34,7 +45,7 @@ export function Footer() {
               <li><Link href="/request/1" className="hover:text-primary transition-colors">Locksmith</Link></li>
               <li><Link href="/request/2" className="hover:text-primary transition-colors">Power Washing</Link></li>
               <li><Link href="/request/3" className="hover:text-primary transition-colors">Car Cleaning</Link></li>
-              <li><Link href="/#services" className="hover:text-primary transition-colors">View All Services</Link></li>
+              <li><button onClick={handleViewServices} className="hover:text-primary transition-colors">View All Services</button></li>
             </ul>
           </div>
 
