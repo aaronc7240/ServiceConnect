@@ -33,6 +33,9 @@ export function Navbar() {
           </Link>
 
           <div className="flex items-center gap-6">
+            <Link href="/quote-status" className="text-sm font-medium text-slate-600 hover:text-primary transition-colors hidden md:block">
+              Track Quote
+            </Link>
             <Link href="/admin" className="text-sm font-medium text-slate-600 hover:text-primary transition-colors hidden sm:block">
               Provider Login
             </Link>

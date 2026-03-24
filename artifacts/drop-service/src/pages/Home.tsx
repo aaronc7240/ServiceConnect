@@ -117,8 +117,52 @@ export function Home() {
         </div>
       </section>
 
+      {/* Social Proof Stats */}
+      <section className="py-10 bg-white border-y border-slate-100">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            {[
+              { value: "500+", label: "Quotes Requested" },
+              { value: "20", label: "Service Categories" },
+              { value: "26", label: "Counties Covered" },
+              { value: "4.9★", label: "Average Rating" },
+            ].map(({ value, label }) => (
+              <div key={label}>
+                <div className="text-3xl font-display font-bold text-primary mb-1">{value}</div>
+                <div className="text-sm text-slate-500">{label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section className="py-20 bg-slate-50">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-xl mx-auto mb-14">
+            <h2 className="text-3xl font-display font-bold text-slate-900 mb-3">How It Works</h2>
+            <p className="text-slate-600">Get connected with a trusted local professional in just a few steps.</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8 relative">
+            <div className="hidden md:block absolute top-10 left-1/4 right-1/4 h-0.5 bg-gradient-to-r from-primary/30 to-primary/30" />
+            {[
+              { step: "1", title: "Tell Us What You Need", desc: "Fill in a short form describing your job — takes less than 2 minutes. No account needed.", icon: "📋" },
+              { step: "2", title: "We Match You Instantly", desc: "We review your request and match you with a vetted local professional in your area.", icon: "🔍" },
+              { step: "3", title: "Receive Your Free Quote", desc: "The professional contacts you directly with a tailored, no-obligation quote.", icon: "✅" },
+            ].map(({ step, title, desc, icon }) => (
+              <div key={step} className="relative bg-white rounded-2xl p-8 border border-slate-200 shadow-sm text-center">
+                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-2xl mx-auto mb-5">{icon}</div>
+                <div className="absolute -top-3 -right-3 w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold shadow-md">{step}</div>
+                <h3 className="font-bold text-slate-900 text-lg mb-2">{title}</h3>
+                <p className="text-slate-500 text-sm leading-relaxed">{desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Services Grid */}
-      <section id="services" className="py-24 bg-slate-50">
+      <section id="services" className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-10">
             <h2 className="text-3xl font-display font-bold text-slate-900 mb-4">What do you need help with?</h2>
@@ -188,6 +232,96 @@ export function Home() {
             </div>
             )
           })()}
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-20 bg-slate-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-display font-bold text-slate-900 mb-3">What Our Customers Say</h2>
+            <p className="text-slate-500">Trusted by hundreds of homeowners across Ireland</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              { name: "Sinéad O'Brien", location: "Dublin 6", service: "Plumbing", text: "Burst pipe on a Sunday morning and ServiceConnect had a plumber at my door within the hour. Absolutely brilliant service — highly recommend.", stars: 5 },
+              { name: "Declan Murphy", location: "Cork City", service: "Electrician", text: "Got three quotes for my EV charger install through ServiceConnect. The whole process was seamless and I saved over €300 versus ringing around myself.", stars: 5 },
+              { name: "Aoife Kelly", location: "Galway", service: "Cleaning", text: "End-of-tenancy clean was spotless. Got my full deposit back. The cleaner was professional, thorough, and really good value. Will definitely use again.", stars: 5 },
+              { name: "Pádraig Walsh", location: "Limerick", service: "Landscaping", text: "Garden was a disaster after the winter. ServiceConnect sent a brilliant team who transformed it in a day. Neighbours are jealous!", stars: 5 },
+              { name: "Fiona Ryan", location: "Waterford", service: "Handyman", text: "Had a list of small jobs that were nagging at me for months. One handyman sorted everything in an afternoon. Great communication throughout.", stars: 5 },
+              { name: "Seamus Brennan", location: "Kilkenny", service: "Boiler Service", text: "Boiler was playing up before winter. ServiceConnect matched me with an RGI engineer quickly. Fast, professional, and reasonably priced.", stars: 5 },
+            ].map(({ name, location, service, text, stars }) => (
+              <div key={name} className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+                <div className="flex text-amber-400 mb-3">{"★".repeat(stars)}</div>
+                <p className="text-slate-700 text-sm leading-relaxed mb-5 italic">"{text}"</p>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-sm flex-shrink-0">
+                    {name.split(' ').map(n => n[0]).join('')}
+                  </div>
+                  <div>
+                    <div className="font-semibold text-slate-900 text-sm">{name}</div>
+                    <div className="text-xs text-slate-400">{location} · {service}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Service Area */}
+      <section className="py-20 bg-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl font-display font-bold text-slate-900 mb-3">Serving All 26 Counties</h2>
+          <p className="text-slate-500 mb-12">Our network of trusted professionals covers the entire Republic of Ireland.</p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
+            {[
+              { province: "Leinster", counties: ["Dublin", "Wicklow", "Wexford", "Kildare", "Meath", "Louth", "Kilkenny", "Carlow", "Laois", "Offaly", "Westmeath", "Longford"] },
+              { province: "Munster", counties: ["Cork", "Kerry", "Limerick", "Tipperary", "Waterford", "Clare"] },
+              { province: "Connacht", counties: ["Galway", "Mayo", "Roscommon", "Leitrim", "Sligo"] },
+              { province: "Ulster (ROI)", counties: ["Donegal", "Cavan", "Monaghan"] },
+            ].map(({ province, counties }) => (
+              <div key={province} className="bg-slate-50 rounded-2xl p-5 border border-slate-200 text-left">
+                <h3 className="font-bold text-slate-900 mb-3 text-sm uppercase tracking-wide">{province}</h3>
+                <ul className="space-y-1">
+                  {counties.map(c => (
+                    <li key={c} className="text-sm text-slate-500 flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary/50 flex-shrink-0" />{c}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-20 bg-slate-50">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-display font-bold text-slate-900 mb-3">Frequently Asked Questions</h2>
+          </div>
+          <div className="space-y-3">
+            {[
+              { q: "Is there a fee to submit a quote request?", a: "No. Submitting a quote request through ServiceConnect is completely free. We don't charge homeowners anything to connect them with professionals." },
+              { q: "How quickly will I hear back?", a: "Most requests are matched within a few hours during business hours. For urgent or emergency jobs, we prioritise getting someone to you as quickly as possible." },
+              { q: "Are the professionals vetted?", a: "Yes. Every professional in our network is verified before being listed. We check licences, insurance, and customer reviews to ensure you receive a quality, reliable service." },
+              { q: "What if I'm not happy with the quote?", a: "You're under no obligation. If the quote doesn't work for you, simply let us know and we'll try to find an alternative professional, or you can walk away with no charge." },
+              { q: "Which areas do you cover?", a: "We currently cover all 26 counties in the Republic of Ireland, with a strong network of professionals in all major cities and surrounding areas." },
+              { q: "Can I upload photos of the job?", a: "Yes! When submitting your request, you can upload photos to help the professional understand the scope of work and provide a more accurate quote." },
+            ].map(({ q, a }, i) => (
+              <details key={i} className="group bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                <summary className="flex items-center justify-between gap-4 px-6 py-5 cursor-pointer select-none font-semibold text-slate-900 text-sm list-none">
+                  {q}
+                  <span className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 text-slate-400 group-open:rotate-180 transition-transform duration-200">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                  </span>
+                </summary>
+                <div className="px-6 pb-5 text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-4">{a}</div>
+              </details>
+            ))}
+          </div>
         </div>
       </section>
 

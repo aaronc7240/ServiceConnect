@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useLocation, useParams } from "wouter"
 import { Helmet } from "react-helmet-async"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { ShieldCheck, ArrowLeft, Loader2, CheckCircle } from "lucide-react"
-import { useListServices, useSubmitLead } from "@workspace/api-client-react"
+import { ShieldCheck, ArrowLeft, Loader2, CheckCircle, Camera, Wand2, X, ImagePlus } from "lucide-react"
+import { useListServices } from "@workspace/api-client-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -59,7 +59,20 @@ export function ServiceRequest() {
   const { id } = useParams();
   const [, setLocation] = useLocation();
   const { data: services, isLoading: servicesLoading } = useListServices();
-  const submitLead = useSubmitLead();
+
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+
+  // Photo upload state
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [photoPath, setPhotoPath] = useState<string | null>(null);
+  const [photoUploading, setPhotoUploading] = useState(false);
+  const [photoError, setPhotoError] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // AI state
+  const [aiLoading, setAiLoading] = useState(false);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
@@ -81,12 +94,74 @@ export function ServiceRequest() {
   const watchedService = services?.find(s => s.id === Number(watchedServiceId));
   const descriptionPlaceholder = getPlaceholder(watchedService?.name);
 
-  const onSubmit = (data: FormValues) => {
-    submitLead.mutate({ data }, {
-      onSuccess: () => {
-        setLocation('/thank-you');
-      }
-    });
+  const handleFileSelect = async (file: File) => {
+    if (!file.type.startsWith("image/")) { setPhotoError("Please select an image file."); return; }
+    if (file.size > 10 * 1024 * 1024) { setPhotoError("Image must be under 10MB."); return; }
+    setPhotoError("");
+    setPhotoFile(file);
+    setPhotoPreview(URL.createObjectURL(file));
+    setPhotoUploading(true);
+    try {
+      const urlRes = await fetch(`${import.meta.env.BASE_URL}api/storage/uploads/request-url`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: file.name, size: file.size, contentType: file.type }),
+      });
+      const { uploadURL, objectPath } = await urlRes.json();
+      await fetch(uploadURL, { method: "PUT", body: file, headers: { "Content-Type": file.type } });
+      setPhotoPath(objectPath);
+    } catch {
+      setPhotoError("Photo upload failed. You can still submit your request without a photo.");
+      setPhotoPath(null);
+    } finally {
+      setPhotoUploading(false);
+    }
+  };
+
+  const removePhoto = () => {
+    setPhotoFile(null);
+    setPhotoPreview(null);
+    setPhotoPath(null);
+    setPhotoError("");
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const suggestDescription = async () => {
+    const serviceName = watchedService?.name ?? selectedService?.name;
+    if (!serviceName) return;
+    setAiLoading(true);
+    try {
+      const res = await fetch(`${import.meta.env.BASE_URL}api/ai/describe`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ serviceName }),
+      });
+      const { suggestion } = await res.json();
+      if (suggestion) setValue("description", suggestion, { shouldValidate: true });
+    } catch {
+      // silently fail
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
+  const onSubmit = async (data: FormValues) => {
+    setSubmitting(true);
+    setSubmitError("");
+    try {
+      const res = await fetch(`${import.meta.env.BASE_URL}api/leads`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...data, photoUrl: photoPath ?? undefined }),
+      });
+      if (!res.ok) throw new Error("Submit failed");
+      const result = await res.json();
+      setLocation(`/thank-you${result.referenceCode ? `?ref=${result.referenceCode}` : ''}`);
+    } catch {
+      setSubmitError("Failed to submit request. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (servicesLoading) {
@@ -236,7 +311,18 @@ export function ServiceRequest() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-2">Describe what you need</label>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-sm font-semibold text-slate-900">Describe what you need</label>
+                  <button
+                    type="button"
+                    onClick={suggestDescription}
+                    disabled={aiLoading || (!watchedService && !selectedService)}
+                    className="flex items-center gap-1.5 text-xs font-medium text-primary hover:text-primary/80 disabled:opacity-40 transition-colors"
+                  >
+                    {aiLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Wand2 className="w-3.5 h-3.5" />}
+                    {aiLoading ? "Generating..." : "Suggest with AI"}
+                  </button>
+                </div>
                 <Textarea 
                   placeholder={descriptionPlaceholder}
                   {...register("description")} 
@@ -244,7 +330,54 @@ export function ServiceRequest() {
                 {errors.description && <p className="text-destructive text-sm mt-1.5">{errors.description.message}</p>}
               </div>
 
-              <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 flex items-start gap-3 mt-8">
+              {/* Photo Upload */}
+              <div>
+                <label className="block text-sm font-semibold text-slate-900 mb-2">
+                  Add a photo <span className="text-slate-400 font-normal">(optional)</span>
+                </label>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={e => { const f = e.target.files?.[0]; if (f) handleFileSelect(f); }}
+                />
+                {!photoFile ? (
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="w-full border-2 border-dashed border-slate-200 rounded-xl p-6 text-center hover:border-primary/40 hover:bg-primary/5 transition-all group"
+                  >
+                    <ImagePlus className="w-8 h-8 mx-auto mb-2 text-slate-300 group-hover:text-primary/40 transition-colors" />
+                    <p className="text-sm text-slate-500">Click to add a photo of the job</p>
+                    <p className="text-xs text-slate-400 mt-1">JPG, PNG or HEIC · Max 10MB</p>
+                  </button>
+                ) : (
+                  <div className="relative rounded-xl overflow-hidden border border-slate-200 bg-slate-50">
+                    <img src={photoPreview!} alt="Preview" className="w-full h-48 object-cover" />
+                    <button
+                      type="button"
+                      onClick={removePhoto}
+                      className="absolute top-2 right-2 w-8 h-8 bg-slate-900/70 hover:bg-slate-900 text-white rounded-full flex items-center justify-center transition-colors"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                    {photoUploading && (
+                      <div className="absolute inset-0 bg-white/80 flex items-center justify-center gap-2 text-sm text-slate-600">
+                        <Loader2 className="w-4 h-4 animate-spin" /> Uploading photo...
+                      </div>
+                    )}
+                    {!photoUploading && photoPath && (
+                      <div className="absolute bottom-2 left-2 bg-green-600 text-white text-xs px-2 py-1 rounded-md flex items-center gap-1">
+                        <CheckCircle className="w-3 h-3" /> Uploaded
+                      </div>
+                    )}
+                  </div>
+                )}
+                {photoError && <p className="text-amber-600 text-xs mt-1.5">{photoError}</p>}
+              </div>
+
+              <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 flex items-start gap-3">
                 <ShieldCheck className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
                 <p className="text-sm text-blue-900">
                   Your information is secure. We only share these details with the specific professional assigned to your job to provide an accurate quote.
@@ -255,17 +388,17 @@ export function ServiceRequest() {
                 type="submit" 
                 size="lg" 
                 className="w-full h-14 text-lg" 
-                disabled={submitLead.isPending}
+                disabled={submitting || photoUploading}
               >
-                {submitLead.isPending ? (
+                {submitting ? (
                   <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Submitting Request...</>
                 ) : (
                   <><CheckCircle className="w-5 h-5 mr-2" /> Request Quote Now</>
                 )}
               </Button>
 
-              {submitLead.isError && (
-                <p className="text-destructive text-center text-sm">Failed to submit request. Please try again.</p>
+              {submitError && (
+                <p className="text-destructive text-center text-sm">{submitError}</p>
               )}
             </form>
           </div>

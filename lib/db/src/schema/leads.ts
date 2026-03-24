@@ -4,6 +4,7 @@ import { z } from "zod/v4";
 
 export const leadsTable = pgTable("leads", {
   id: serial("id").primaryKey(),
+  referenceCode: text("reference_code"),
   serviceId: integer("service_id").notNull(),
   customerName: text("customer_name").notNull(),
   customerEmail: text("customer_email").notNull(),
@@ -12,6 +13,7 @@ export const leadsTable = pgTable("leads", {
   description: text("description").notNull(),
   timeframe: text("timeframe"),
   budgetRange: text("budget_range"),
+  photoUrl: text("photo_url"),
   status: text("status").notNull().default("new"),
   adminNotes: text("admin_notes"),
   assignedProviderId: integer("assigned_provider_id"),

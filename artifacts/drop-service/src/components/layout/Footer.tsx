@@ -29,22 +29,24 @@ export function Footer() {
           </div>
           
           <div>
-            <h4 className="text-white font-semibold mb-6">Services</h4>
+            <h4 className="text-white font-semibold mb-6">Popular Services</h4>
             <ul className="space-y-3">
-              <li><Link href="/request/1" className="hover:text-primary transition-colors">Locksmith</Link></li>
-              <li><Link href="/request/2" className="hover:text-primary transition-colors">Power Washing</Link></li>
-              <li><Link href="/request/3" className="hover:text-primary transition-colors">Car Cleaning</Link></li>
-              <li><Link href="/services" className="hover:text-primary transition-colors">View All Services</Link></li>
+              <li><Link href="/request/1" className="hover:text-primary transition-colors">Emergency Plumbing</Link></li>
+              <li><Link href="/request/2" className="hover:text-primary transition-colors">End-of-Tenancy Cleaning</Link></li>
+              <li><Link href="/request/4" className="hover:text-primary transition-colors">EV Charger Installation</Link></li>
+              <li><Link href="/request/5" className="hover:text-primary transition-colors">Landscaping</Link></li>
+              <li><Link href="/services" className="hover:text-primary transition-colors font-medium text-slate-300">View All Services →</Link></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="text-white font-semibold mb-6">Company</h4>
+            <h4 className="text-white font-semibold mb-6">Helpful Links</h4>
             <ul className="space-y-3">
-              <li><a href="#" className="hover:text-primary transition-colors">About Us</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Contact</a></li>
+              <li><Link href="/quote-status" className="hover:text-primary transition-colors">Track Your Quote</Link></li>
+              <li><Link href="/pricing/plumbing" className="hover:text-primary transition-colors">Plumbing Pricing Guide</Link></li>
+              <li><Link href="/pricing/cleaning" className="hover:text-primary transition-colors">Cleaning Pricing Guide</Link></li>
+              <li><Link href="/pricing/electrician" className="hover:text-primary transition-colors">Electrician Pricing Guide</Link></li>
               <li><Link href="/admin" className="hover:text-primary transition-colors">Partner Portal</Link></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Privacy Policy</a></li>
             </ul>
           </div>
         </div>
