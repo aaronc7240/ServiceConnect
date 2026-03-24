@@ -172,7 +172,7 @@ export function ServiceRequest() {
                       {...register("timeframe")}
                       className="flex h-12 w-full rounded-xl border-2 border-input bg-background pl-4 pr-10 py-2 text-sm appearance-none cursor-pointer ring-offset-background focus-visible:outline-none focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/10 transition-all hover:border-primary/50"
                     >
-                      <option value="">Select a timeframe...</option>
+                      <option value="" disabled hidden>Select a timeframe...</option>
                       {TIMEFRAME_OPTIONS.map(opt => (
                         <option key={opt} value={opt}>{opt}</option>
                       ))}
