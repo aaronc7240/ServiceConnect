@@ -145,7 +145,7 @@ export function ServiceRequest() {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-slate-900 mb-2">Phone Number</label>
-                  <Input placeholder="(555) 123-4567" type="tel" {...register("customerPhone")} />
+                  <Input placeholder="+353 83 123 4567" type="tel" {...register("customerPhone")} />
                   {errors.customerPhone && <p className="text-destructive text-sm mt-1.5">{errors.customerPhone.message}</p>}
                 </div>
               </div>
@@ -157,8 +157,8 @@ export function ServiceRequest() {
                   {errors.customerEmail && <p className="text-destructive text-sm mt-1.5">{errors.customerEmail.message}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-slate-900 mb-2">Service Address / Zip Code</label>
-                  <Input placeholder="123 Main St or 90210" {...register("address")} />
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">Address or Eircode</label>
+                  <Input placeholder="123 Main St or A65 F4E2" {...register("address")} />
                   {errors.address && <p className="text-destructive text-sm mt-1.5">{errors.address.message}</p>}
                 </div>
               </div>
