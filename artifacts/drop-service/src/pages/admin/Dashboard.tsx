@@ -288,6 +288,12 @@ function ManageLeadDialog({ lead, onClose, onSuccess }: { lead: Lead | null, onC
                 <div><span className="text-slate-500 font-medium block">Service</span><span className="font-semibold text-slate-900">{lead.serviceName}</span></div>
                 <div><span className="text-slate-500 font-medium block">Contact</span><span>{lead.customerPhone} <br/> {lead.customerEmail}</span></div>
                 <div><span className="text-slate-500 font-medium block">Location</span><span>{lead.address}</span></div>
+                {lead.timeframe && (
+                  <div><span className="text-slate-500 font-medium block">Timeframe</span><span>{lead.timeframe}</span></div>
+                )}
+                {lead.budgetRange && (
+                  <div><span className="text-slate-500 font-medium block">Budget</span><span>{lead.budgetRange}</span></div>
+                )}
               </div>
               <div className="pt-2 border-t border-slate-200">
                 <span className="text-slate-500 font-medium block mb-1">Customer Notes</span>
