@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { useLocation, useParams } from "wouter"
+import { Helmet } from "react-helmet-async"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -96,7 +97,15 @@ export function ServiceRequest() {
     );
   }
 
+  const serviceName = watchedService?.name ?? selectedService?.name;
+
   return (
+    <>
+      <Helmet>
+        <title>{serviceName ? `Get a Free ${serviceName} Quote | ServiceConnect` : "Request a Quote | ServiceConnect"}</title>
+        <meta name="description" content={serviceName ? `Request a free ${serviceName} quote from trusted local professionals in Ireland. Fast response, vetted tradespeople, no obligation.` : "Request a free quote from trusted local professionals across Ireland."} />
+        <meta name="robots" content="noindex" />
+      </Helmet>
     <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8 relative">
       {/* Background decoration */}
       <div className="absolute top-0 left-0 w-full h-96 bg-primary/5 -skew-y-2 transform origin-top-left -z-10" />
@@ -263,5 +272,6 @@ export function ServiceRequest() {
         </div>
       </div>
     </div>
+    </>
   )
 }

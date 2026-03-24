@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { Link } from "wouter"
+import { Helmet } from "react-helmet-async"
 import { motion } from "framer-motion"
 import {
   Wrench, Droplets, Car, Home as HomeIcon, Zap, ArrowRight, Key, Leaf, Hammer, Paintbrush,
@@ -46,6 +47,15 @@ export function AllServices() {
   }, []);
 
   return (
+    <>
+      <Helmet>
+        <title>All Local Services | ServiceConnect</title>
+        <meta name="description" content="Browse all 20 local services available through ServiceConnect. Find trusted professionals for plumbing, cleaning, electrical, landscaping and more across Ireland." />
+        <link rel="canonical" href="https://serviceconnect.ie/services" />
+        <meta property="og:title" content="All Local Services | ServiceConnect" />
+        <meta property="og:description" content="Browse all 20 local services available through ServiceConnect across Ireland." />
+        <meta property="og:url" content="https://serviceconnect.ie/services" />
+      </Helmet>
     <div className="min-h-screen bg-slate-50">
       {/* Page header */}
       <div className="bg-slate-900 py-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
@@ -122,5 +132,6 @@ export function AllServices() {
         })()}
       </div>
     </div>
+    </>
   );
 }

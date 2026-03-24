@@ -1,9 +1,15 @@
 import { Link } from "wouter"
+import { Helmet } from "react-helmet-async"
 import { CheckCircle2, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export function ThankYou() {
   return (
+    <>
+      <Helmet>
+        <title>Request Received | ServiceConnect</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
     <div className="min-h-[80vh] flex flex-col items-center justify-center bg-slate-50 px-4">
       <div className="max-w-md w-full text-center">
         <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-8 animate-in zoom-in duration-500">
@@ -27,5 +33,6 @@ export function ThankYou() {
         </div>
       </div>
     </div>
+    </>
   )
 }

@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Link } from "wouter"
+import { Helmet } from "react-helmet-async"
 import { motion } from "framer-motion"
 import { ShieldCheck, Clock, Star, Wrench, Droplets, Car, Home as HomeIcon, Zap, ArrowRight, CheckCircle2, Key, Leaf, Hammer, Paintbrush, Search, Sparkles, Trash2, Thermometer, Heart, Flame, Bug, Building2, Package, Shield, Settings, Sun, Accessibility } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -39,7 +40,39 @@ export function Home() {
   const { data: services, isLoading } = useListServices();
   const [search, setSearch] = useState("");
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "ServiceConnect",
+    "description": "Trusted local service professionals across Ireland. Get free quotes for plumbing, electrical, cleaning, landscaping and more.",
+    "url": "https://serviceconnect.ie",
+    "image": "https://serviceconnect.ie/opengraph.jpg",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "IE"
+    },
+    "areaServed": "Ireland",
+    "serviceType": [
+      "Emergency Plumbing", "Deep Cleaning", "Handyman Services", "Electrician",
+      "Landscaping", "Waste Removal", "Painting & Decorating", "Energy Retrofitting",
+      "Pet Grooming", "Boiler Servicing", "Gutter Cleaning", "Pest Control",
+      "Property Management", "Locksmith", "CCTV Installation", "Carpet Cleaning",
+      "Tree Surgery", "Roofing", "Tiling", "Solar Panel Installation"
+    ],
+    "priceRange": "€€"
+  };
+
   return (
+    <>
+      <Helmet>
+        <title>ServiceConnect — Trusted Local Services in Ireland</title>
+        <meta name="description" content="Get free quotes from trusted local professionals across Ireland. Plumbing, electrical, cleaning, landscaping and 17 more services. Fast, reliable, vetted tradespeople." />
+        <link rel="canonical" href="https://serviceconnect.ie/" />
+        <meta property="og:title" content="ServiceConnect — Trusted Local Services in Ireland" />
+        <meta property="og:description" content="Get free quotes from trusted local professionals across Ireland. Plumbing, electrical, cleaning, landscaping and more." />
+        <meta property="og:url" content="https://serviceconnect.ie/" />
+        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+      </Helmet>
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
       <section className="relative pt-24 pb-32 overflow-hidden">
@@ -226,5 +259,6 @@ export function Home() {
         </div>
       </section>
     </div>
+    </>
   )
 }
