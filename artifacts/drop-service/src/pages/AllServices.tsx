@@ -10,6 +10,29 @@ import {
 import { Input } from "@/components/ui/input"
 import { useListServices } from "@workspace/api-client-react"
 
+const CARD_GRADIENTS = [
+  "from-blue-500 to-blue-700",
+  "from-emerald-500 to-emerald-700",
+  "from-amber-500 to-amber-600",
+  "from-violet-500 to-violet-700",
+  "from-green-500 to-green-700",
+  "from-orange-500 to-orange-600",
+  "from-rose-500 to-rose-700",
+  "from-teal-500 to-teal-700",
+  "from-pink-500 to-pink-600",
+  "from-red-500 to-red-700",
+  "from-sky-500 to-sky-600",
+  "from-indigo-500 to-indigo-700",
+  "from-cyan-500 to-cyan-700",
+  "from-yellow-500 to-yellow-600",
+  "from-slate-600 to-slate-800",
+  "from-purple-500 to-purple-700",
+  "from-gray-600 to-gray-800",
+  "from-lime-500 to-lime-700",
+  "from-blue-400 to-blue-600",
+  "from-amber-600 to-amber-800",
+];
+
 const getIcon = (icon: string) => {
   const icons: Record<string, React.ReactNode> = {
     'wrench': <Wrench className="w-8 h-8" />,
@@ -100,28 +123,37 @@ export function AllServices() {
               {filtered.map((service, index) => (
                 <motion.div
                   key={service.id}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: index * 0.05 }}
+                  transition={{ duration: 0.3, delay: (index % 3) * 0.07 }}
                 >
                   <Link href={`/request/${service.id}`}>
-                    <div className="group block h-full bg-white rounded-2xl p-8 border border-slate-200/60 shadow-lg shadow-slate-200/30 hover:shadow-xl hover:border-primary/30 transition-all duration-300 hover:-translate-y-1 cursor-pointer relative overflow-hidden">
-                      <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110" />
-
-                      <div className="w-16 h-16 rounded-2xl bg-slate-50 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors duration-300 relative z-10">
-                        {getIcon(service.icon)}
+                    <div className="group flex flex-col h-full bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 cursor-pointer border border-slate-100">
+                      <div className={`relative bg-gradient-to-br ${CARD_GRADIENTS[index % CARD_GRADIENTS.length]} h-36 flex items-center justify-center overflow-hidden flex-shrink-0`}>
+                        <div className="absolute -right-6 -top-6 w-28 h-28 bg-white/10 rounded-full" />
+                        <div className="absolute -left-4 -bottom-4 w-20 h-20 bg-black/10 rounded-full" />
+                        <div className="relative z-10 w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm ring-2 ring-white/30 flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300">
+                          {getIcon(service.icon)}
+                        </div>
+                        <div className="absolute top-3 right-3 bg-black/20 backdrop-blur-sm text-white text-[11px] font-semibold px-2.5 py-1 rounded-full tracking-wide">
+                          Free Quote
+                        </div>
                       </div>
-
-                      <h3 className="text-xl font-bold text-slate-900 mb-3 relative z-10 group-hover:text-primary transition-colors">
-                        {service.name}
-                      </h3>
-                      <p className="text-slate-600 mb-6 relative z-10 line-clamp-2">
-                        {service.description}
-                      </p>
-
-                      <div className="flex items-center text-primary font-semibold text-sm relative z-10">
-                        Get Quotes <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                      <div className="p-6 flex flex-col flex-1">
+                        <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-primary transition-colors leading-snug">
+                          {service.name}
+                        </h3>
+                        <p className="text-slate-500 text-sm leading-relaxed mb-5 line-clamp-2 flex-1">
+                          {service.description}
+                        </p>
+                        <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+                          <span className="flex items-center text-primary font-semibold text-sm gap-1.5 group-hover:gap-2.5 transition-all">
+                            Get Free Quote
+                            <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                          </span>
+                          <span className="text-[11px] text-slate-400 font-medium uppercase tracking-wide">Fast response</span>
+                        </div>
                       </div>
                     </div>
                   </Link>
