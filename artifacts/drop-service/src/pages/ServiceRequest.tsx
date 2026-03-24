@@ -179,11 +179,8 @@ export function ServiceRequest() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-slate-900 mb-2">
-                    Approximate budget
-                    <span className="ml-2 font-normal text-primary">{BUDGET_STEPS[budgetIndex]}</span>
-                  </label>
-                  <div className="pt-2 px-1">
+                  <label className="block text-sm font-semibold text-slate-900 mb-3">Approximate budget</label>
+                  <div className="px-1">
                     <input
                       type="range"
                       min={0}
@@ -195,14 +192,21 @@ export function ServiceRequest() {
                         setBudgetIndex(i);
                         setValue("budgetRange", BUDGET_STEPS[i]);
                       }}
-                      className="w-full h-2 rounded-full appearance-none cursor-pointer accent-primary"
+                      style={{
+                        background: `linear-gradient(to right, hsl(221 83% 53%) ${(budgetIndex / (BUDGET_STEPS.length - 1)) * 100}%, #e2e8f0 ${(budgetIndex / (BUDGET_STEPS.length - 1)) * 100}%)`
+                      }}
+                      className="w-full h-2 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:cursor-pointer [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-primary [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:shadow-md"
                     />
-                    <div className="flex justify-between mt-1.5">
-                      {BUDGET_STEPS.map((_, i) => (
-                        <span
+                    <div className="flex justify-between mt-2">
+                      {BUDGET_STEPS.map((label, i) => (
+                        <button
                           key={i}
-                          className={`w-2 h-2 rounded-full transition-colors ${i <= budgetIndex ? 'bg-primary' : 'bg-slate-200'}`}
-                        />
+                          type="button"
+                          onClick={() => { setBudgetIndex(i); setValue("budgetRange", BUDGET_STEPS[i]); }}
+                          className={`text-[10px] leading-tight text-center transition-colors max-w-[56px] ${i === budgetIndex ? 'text-primary font-semibold' : 'text-slate-400 hover:text-slate-600'}`}
+                        >
+                          {label}
+                        </button>
                       ))}
                     </div>
                   </div>
