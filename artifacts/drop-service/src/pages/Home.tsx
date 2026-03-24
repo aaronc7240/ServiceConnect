@@ -98,45 +98,92 @@ export function Home() {
       </Helmet>
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="relative pt-24 pb-32 overflow-hidden">
-        {/* Background Image & Overlay */}
-        <div className="absolute inset-0 z-0">
-          <img 
-            src={`${import.meta.env.BASE_URL}images/hero-bg.png`} 
-            alt="Abstract architectural background" 
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-transparent" />
-        </div>
+      <section className="relative pt-24 pb-20 overflow-hidden bg-gradient-to-br from-slate-900 via-[#0c1f4a] to-slate-900">
+        {/* Decorative glow orbs */}
+        <div className="absolute top-0 right-0 w-[700px] h-[700px] bg-blue-600/20 rounded-full blur-3xl -mr-64 -mt-48 pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] bg-blue-400/10 rounded-full blur-3xl pointer-events-none" />
+        {/* Subtle grid overlay */}
+        <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="max-w-2xl">
+          <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[440px]">
+
+            {/* Left: copy */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary font-semibold text-sm mb-6 border border-primary/20">
-                <Star className="w-4 h-4 fill-primary" /> Top Rated Local Professionals
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 text-white font-semibold text-sm mb-6 border border-white/20 backdrop-blur-sm">
+                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" /> Top Rated Local Professionals
               </div>
-              <h1 className="text-5xl md:text-6xl font-display font-bold text-slate-900 leading-[1.1] mb-6">
-                Find <span className="text-gradient">Trusted</span> Local Pros in Minutes
+              <h1 className="text-5xl md:text-6xl font-display font-bold text-white leading-[1.1] mb-6">
+                Find <span className="text-blue-400">Trusted</span> Local Pros in Minutes
               </h1>
-              <p className="text-lg md:text-xl text-slate-600 mb-10 leading-relaxed">
+              <p className="text-lg md:text-xl text-slate-300 mb-10 leading-relaxed">
                 Skip the hassle of calling around. Tell us what you need, and we'll connect you with vetted, highly-rated service providers in your area.
               </p>
-              
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button size="lg" className="text-lg px-10 h-14 w-full sm:w-auto" onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth'})}>
-                  Browse Services
+
+              <div className="flex flex-col sm:flex-row gap-4 items-start">
+                <Button
+                  size="lg"
+                  className="text-lg px-10 h-14 w-full sm:w-auto bg-blue-500 hover:bg-blue-400 text-white shadow-lg shadow-blue-500/30"
+                  onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
+                >
+                  Browse All Services
                 </Button>
-                <div className="flex items-center gap-3 text-sm font-medium text-slate-600 px-4">
-                  <CheckCircle2 className="w-5 h-5 text-green-500" /> No hidden fees
-                  <CheckCircle2 className="w-5 h-5 text-green-500 ml-2" /> Vetted pros
+                <div className="flex items-center gap-5 text-sm font-medium text-slate-300 sm:h-14 sm:items-center">
+                  <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-green-400" /> No hidden fees</span>
+                  <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-green-400" /> Vetted pros</span>
                 </div>
               </div>
             </motion.div>
+
+            {/* Right: quick service picker */}
+            <motion.div
+              initial={{ opacity: 0, x: 32 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="hidden lg:block"
+            >
+              <div className="bg-white/10 backdrop-blur-md rounded-3xl border border-white/15 p-6 shadow-2xl">
+                <p className="text-white/60 font-semibold text-xs uppercase tracking-widest mb-4">Jump straight to a service</p>
+                <div className="grid grid-cols-3 gap-3">
+                  {(services ?? []).filter(s => s.active).slice(0, 6).map((s, i) => (
+                    <Link href={`/request/${s.id}`} key={s.id}>
+                      <motion.div
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3, delay: 0.3 + i * 0.06 }}
+                        className="group flex flex-col items-center gap-2 bg-white/10 hover:bg-white/20 rounded-2xl p-3.5 text-center cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-lg"
+                      >
+                        <div className="w-11 h-11 rounded-xl bg-blue-500/30 flex items-center justify-center text-white group-hover:bg-blue-500/50 transition-colors">
+                          <span className="scale-75 block">{getIcon(s.icon)}</span>
+                        </div>
+                        <span className="text-white text-[11px] font-medium leading-tight line-clamp-2">{s.name}</span>
+                      </motion.div>
+                    </Link>
+                  ))}
+                </div>
+                <div className="mt-4 pt-4 border-t border-white/10 flex items-center justify-between">
+                  <span className="text-white/40 text-xs">20 services available</span>
+                  <Link href="/services">
+                    <span className="text-blue-300 hover:text-blue-200 text-xs font-semibold flex items-center gap-1 transition-colors">
+                      View all <ArrowRight className="w-3 h-3" />
+                    </span>
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+
           </div>
+        </div>
+
+        {/* Wave transition to white */}
+        <div className="absolute bottom-0 left-0 right-0 leading-none">
+          <svg viewBox="0 0 1440 56" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full block">
+            <path d="M0 56V28C240 0 480 14 720 28C960 42 1200 14 1440 0V56H0Z" fill="white" />
+          </svg>
         </div>
       </section>
 
