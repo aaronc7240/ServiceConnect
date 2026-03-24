@@ -2,6 +2,7 @@ import { Router, type IRouter } from "express";
 import { db, leadsTable, servicesTable, providersTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import { SubmitLeadBody, UpdateLeadBody } from "@workspace/api-zod";
+import { sendLeadNotification } from "../gmail";
 
 const router: IRouter = Router();
 
@@ -51,7 +52,19 @@ router.post("/leads", async (req, res) => {
     description: body.description,
     status: "new",
   }).returning();
-  res.status(201).json(await enrichLead(lead));
+  const enriched = await enrichLead(lead);
+
+  // Send email notification (non-blocking)
+  sendLeadNotification({
+    customerName: enriched.customerName,
+    customerEmail: enriched.customerEmail,
+    customerPhone: enriched.customerPhone,
+    address: enriched.address,
+    description: enriched.description,
+    serviceName: enriched.serviceName,
+  });
+
+  res.status(201).json(enriched);
 });
 
 router.patch("/leads/:id", async (req, res) => {

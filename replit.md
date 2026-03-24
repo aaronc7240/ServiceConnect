@@ -77,12 +77,12 @@ All under `/api`:
 - DB push: `pnpm --filter @workspace/db run push`
 - Codegen: `pnpm --filter @workspace/api-spec run codegen`
 
-## Email Notifications (Pending Setup)
+## Email Notifications
 
-Lead notification emails to `Aaronc7240@gmail.com` are not yet configured.
-The user wants to send FROM `serviceconnectlead@gmail.com`.
-The Gmail integration was proposed but dismissed — next time, either retry the Gmail integration or use Resend (connector:ccfg_resend_01K69QKYK789WN202XSE3QS17V) with a free account at resend.com and store the API key as a secret.
-The notification email should be sent from the API server's lead submission route (`artifacts/api-server/src/routes/leads.ts`) after a lead is successfully inserted.
+Configured and active. When a new lead is submitted, a notification email is sent to `Aaronc7240@gmail.com` from `serviceconnectlead@gmail.com` via the Gmail Replit integration (connection: conn_google-mail_01KMG6QB4K64CJM1K1P419275A).
+- Gmail client: `artifacts/api-server/src/gmail.ts`
+- Triggered in: `artifacts/api-server/src/routes/leads.ts` (POST /leads)
+- Email is sent non-blocking so it never delays the API response
 
 ## Default Seeded Services
 
