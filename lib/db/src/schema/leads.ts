@@ -10,6 +10,8 @@ export const leadsTable = pgTable("leads", {
   customerPhone: text("customer_phone").notNull(),
   address: text("address").notNull(),
   description: text("description").notNull(),
+  timeframe: text("timeframe"),
+  budgetRange: text("budget_range"),
   status: text("status").notNull().default("new"),
   adminNotes: text("admin_notes"),
   assignedProviderId: integer("assigned_provider_id"),

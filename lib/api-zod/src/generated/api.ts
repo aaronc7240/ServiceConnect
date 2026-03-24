@@ -83,6 +83,8 @@ export const ListLeadsResponseItem = zod.object({
   customerPhone: zod.string(),
   address: zod.string(),
   description: zod.string(),
+  timeframe: zod.string().optional(),
+  budgetRange: zod.string().optional(),
   status: zod.enum(["new", "contacted", "forwarded", "completed", "cancelled"]),
   adminNotes: zod.string().optional(),
   assignedProviderId: zod.number().optional(),
@@ -102,6 +104,8 @@ export const SubmitLeadBody = zod.object({
   customerPhone: zod.string(),
   address: zod.string(),
   description: zod.string(),
+  timeframe: zod.string().optional(),
+  budgetRange: zod.string().optional(),
 });
 
 /**
@@ -128,6 +132,8 @@ export const UpdateLeadResponse = zod.object({
   customerPhone: zod.string(),
   address: zod.string(),
   description: zod.string(),
+  timeframe: zod.string().optional(),
+  budgetRange: zod.string().optional(),
   status: zod.enum(["new", "contacted", "forwarded", "completed", "cancelled"]),
   adminNotes: zod.string().optional(),
   assignedProviderId: zod.number().optional(),

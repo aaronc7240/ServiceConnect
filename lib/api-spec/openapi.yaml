@@ -327,6 +327,10 @@ components:
           type: string
         description:
           type: string
+        timeframe:
+          type: string
+        budgetRange:
+          type: string
         status:
           type: string
           enum: [new, contacted, forwarded, completed, cancelled]
@@ -369,6 +373,10 @@ components:
         address:
           type: string
         description:
+          type: string
+        timeframe:
+          type: string
+        budgetRange:
           type: string
       required:
         - serviceId

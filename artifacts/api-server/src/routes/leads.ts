@@ -26,6 +26,8 @@ async function enrichLead(l: typeof leadsTable.$inferSelect) {
     customerPhone: l.customerPhone,
     address: l.address,
     description: l.description,
+    timeframe: l.timeframe ?? undefined,
+    budgetRange: l.budgetRange ?? undefined,
     status: l.status,
     adminNotes: l.adminNotes ?? undefined,
     assignedProviderId: l.assignedProviderId ?? undefined,
@@ -50,6 +52,8 @@ router.post("/leads", async (req, res) => {
     customerPhone: body.customerPhone,
     address: body.address,
     description: body.description,
+    timeframe: body.timeframe ?? null,
+    budgetRange: body.budgetRange ?? null,
     status: "new",
   }).returning();
   const enriched = await enrichLead(lead);
@@ -62,6 +66,8 @@ router.post("/leads", async (req, res) => {
     address: enriched.address,
     description: enriched.description,
     serviceName: enriched.serviceName,
+    timeframe: enriched.timeframe,
+    budgetRange: enriched.budgetRange,
   });
 
   res.status(201).json(enriched);

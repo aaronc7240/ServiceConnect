@@ -13,4 +13,6 @@ export interface CreateLead {
   customerPhone: string;
   address: string;
   description: string;
+  timeframe?: string;
+  budgetRange?: string;
 }

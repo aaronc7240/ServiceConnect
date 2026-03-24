@@ -54,6 +54,8 @@ export interface Lead {
   customerPhone: string;
   address: string;
   description: string;
+  timeframe?: string;
+  budgetRange?: string;
   status: LeadStatus;
   adminNotes?: string;
   assignedProviderId?: number;
@@ -69,6 +71,8 @@ export interface CreateLead {
   customerPhone: string;
   address: string;
   description: string;
+  timeframe?: string;
+  budgetRange?: string;
 }
 
 export type UpdateLeadStatus =

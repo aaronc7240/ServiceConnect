@@ -9,6 +9,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 
+const TIMEFRAME_OPTIONS = ["ASAP", "Within 1 week", "Within 2 weeks", "Within a month", "Flexible / No rush"];
+const BUDGET_STEPS = ["Under €500", "€500 – €1,000", "€1,000 – €2,500", "€2,500 – €5,000", "€5,000+"];
+
 const formSchema = z.object({
   serviceId: z.coerce.number().min(1, "Please select a service"),
   customerName: z.string().min(2, "Name must be at least 2 characters"),
@@ -16,6 +19,8 @@ const formSchema = z.object({
   customerPhone: z.string().min(10, "Please enter a valid phone number"),
   address: z.string().min(5, "Please enter your address or zip code"),
   description: z.string().min(10, "Please provide a brief description of what you need"),
+  timeframe: z.string().optional(),
+  budgetRange: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -61,12 +66,15 @@ export function ServiceRequest() {
   
   const selectedService = services?.find(s => s.id === Number(id));
 
-  const { register, handleSubmit, formState: { errors }, watch } = useForm<FormValues>({
+  const { register, handleSubmit, formState: { errors }, watch, setValue } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       serviceId: id ? Number(id) : undefined,
+      budgetRange: BUDGET_STEPS[1],
     }
   });
+
+  const [budgetIndex, setBudgetIndex] = useState(1);
 
   const watchedServiceId = watch("serviceId");
   const watchedService = services?.find(s => s.id === Number(watchedServiceId));
@@ -152,6 +160,52 @@ export function ServiceRequest() {
                   <label className="block text-sm font-semibold text-slate-900 mb-2">Service Address / Zip Code</label>
                   <Input placeholder="123 Main St or 90210" {...register("address")} />
                   {errors.address && <p className="text-destructive text-sm mt-1.5">{errors.address.message}</p>}
+                </div>
+              </div>
+
+              {/* Timeframe + Budget row */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">When do you need this done?</label>
+                  <select
+                    {...register("timeframe")}
+                    className="flex h-12 w-full rounded-xl border-2 border-input bg-background px-4 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/10 transition-all"
+                  >
+                    <option value="">Select a timeframe...</option>
+                    {TIMEFRAME_OPTIONS.map(opt => (
+                      <option key={opt} value={opt}>{opt}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">
+                    Approximate budget
+                    <span className="ml-2 font-normal text-primary">{BUDGET_STEPS[budgetIndex]}</span>
+                  </label>
+                  <div className="pt-2 px-1">
+                    <input
+                      type="range"
+                      min={0}
+                      max={BUDGET_STEPS.length - 1}
+                      step={1}
+                      value={budgetIndex}
+                      onChange={e => {
+                        const i = Number(e.target.value);
+                        setBudgetIndex(i);
+                        setValue("budgetRange", BUDGET_STEPS[i]);
+                      }}
+                      className="w-full h-2 rounded-full appearance-none cursor-pointer accent-primary"
+                    />
+                    <div className="flex justify-between mt-1.5">
+                      {BUDGET_STEPS.map((_, i) => (
+                        <span
+                          key={i}
+                          className={`w-2 h-2 rounded-full transition-colors ${i <= budgetIndex ? 'bg-primary' : 'bg-slate-200'}`}
+                        />
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
 

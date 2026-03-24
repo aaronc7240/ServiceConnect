@@ -73,6 +73,8 @@ export async function sendLeadNotification(lead: {
   address: string;
   description: string;
   serviceName: string;
+  timeframe?: string;
+  budgetRange?: string;
 }) {
   try {
     const gmail = await getUncachableGmailClient();
@@ -92,6 +94,8 @@ export async function sendLeadNotification(lead: {
             <tr><td style="padding:8px 0;color:#94a3b8;">Phone</td><td style="padding:8px 0;color:#0f172a;">${lead.customerPhone}</td></tr>
             <tr><td style="padding:8px 0;color:#94a3b8;">Email</td><td style="padding:8px 0;color:#0f172a;">${lead.customerEmail}</td></tr>
             <tr><td style="padding:8px 0;color:#94a3b8;">Address</td><td style="padding:8px 0;color:#0f172a;">${lead.address}</td></tr>
+            ${lead.timeframe ? `<tr><td style="padding:8px 0;color:#94a3b8;">Timeframe</td><td style="padding:8px 0;color:#0f172a;">${lead.timeframe}</td></tr>` : ''}
+            ${lead.budgetRange ? `<tr><td style="padding:8px 0;color:#94a3b8;">Budget</td><td style="padding:8px 0;color:#0f172a;">${lead.budgetRange}</td></tr>` : ''}
           </table>
 
           <div style="margin-top:16px;padding:14px;background:#f1f5f9;border-radius:8px;">
